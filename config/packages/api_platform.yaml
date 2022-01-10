@@ -1,7 +1,17 @@
 api_platform:
+    formats:
+        jsonld:   ['application/ld+json']
+        jsonhal:  ['application/hal+json']
+        jsonapi:  ['application/vnd.api+json']
+        json:     ['application/json']
+        yaml:     ['application/x-yaml']
+        xml:      ['application/xml', 'text/xml']
+        html:     ['text/html']
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+        
+    show_webby: false
