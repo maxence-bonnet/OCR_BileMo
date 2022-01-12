@@ -56,7 +56,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 'token' => [
                     'type' => 'string',
                     'readOnly' => true
-                ]
+                ],
+                'refresh_token' => [
+                    'type' => 'string',
+                ],
             ]
         ]);
 
@@ -79,7 +82,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/User-read.User'
+                                    '$ref' => '#/components/schemas/Token'
                                 ]
                             ]
                         ]

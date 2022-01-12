@@ -22,9 +22,11 @@ use App\Controller\UserRolesController;
     paginationClientItemsPerPage: true, 
     denormalizationContext: [
         'groups' => ['write:User'],
+        'openapi_definition_name' => 'Item'
     ],
     normalizationContext: [
         'groups' => ['read:User:collection'],
+        'openapi_definition_name' => 'Collection'
     ],
     collectionOperations: [
         'get' => [
