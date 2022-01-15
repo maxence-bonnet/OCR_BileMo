@@ -1,4 +1,9 @@
 api_platform:
+
+    title: 'BileMo'
+    description: 'API catalogue de téléphones haut de gamme'
+    version: '0.1.0'
+
     formats:
         jsonld:   ['application/ld+json']
         jsonhal:  ['application/hal+json']
@@ -9,10 +14,23 @@ api_platform:
         html:     ['text/html']
 
     mapping:
-        paths: ['%kernel.project_dir%/src/Entity', '%kernel.project_dir%/config/api_platform/resources']
+        paths: ['%kernel.project_dir%/config/api_platform/resources']
 
     patch_formats:
         json: ['application/merge-patch+json']
+
+    defaults:
+        cache_headers:
+            etag: true
+            max_age: 120
+            shared_max_age: 3600
+            vary: ['Content-Type', 'Authorization', 'Origin']
+
+    http_cache:
+        invalidation:
+            enabled: true
+            # varnish_urls: ['%env(VARNISH_URL)%']
+        public: true
 
     swagger:
         versions: [3]
@@ -22,7 +40,3 @@ api_platform:
             type: header
 
     show_webby: false
-    
-    title: 'BileMo'
-    description: 'API catalogue de téléphones'
-    version: '0.1.0'
