@@ -16,24 +16,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
     {
         $openApi = $this->decorated->__invoke($context);
 
-        // /** @var PathItem $path */
-        // foreach ($openApi->getPaths()->getPaths() as $key => $path) {
-        //     if ($path->getPatch() && $path->getPatch()->getSummary() === 'hidden') {
-        //         $openApi->getPaths()->addPath($key, $path->withPatch(null)); // hidding in documentation paths with summary = "hidden"
-        //     }
-        //     if ($path->getGet() && $path->getGet()->getSummary() === 'hidden') {
-        //         $openApi->getPaths()->addPath($key, $path->withGet(null));
-        //     }
-        // }
-
-
-        // Building Login JWT
-        // $schemas = $openApi->getComponents()->getSecuritySchemes();
-        // $schemas['bearerAuth'] = new \ArrayObject([ // Stateless login
-        //     'type' => 'http',
-        //     'scheme' => 'bearer',
-        //     'bearerFormat' => 'JWT'
-        // ]);
+        # Custom Schemas
 
         $schemas = $openApi->getComponents()->getSchemas();
         $schemas['Credentials'] = new \ArrayObject([
@@ -62,6 +45,17 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 ],
             ]
         ]);
+       
+        $schemas['Refresh_Token'] = new \ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'refresh_token' => [
+                    'type' => 'string'
+                ],
+            ]
+        ]);
+
+        # Custom Paths
 
         $loginPathItem = new PathItem(
             post: new Operation(
@@ -77,10 +71,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
                         ]
                     ])
                 ),
-                summary: 'Retrieves JSON Web Token & refresh token from Credentials.',
+                summary: 'Retrieves JSON Web Token & Refresh Token from Credentials.',
                 responses: [
                     '200' => [
-                        'description' => 'JSON Web Token & refresh token.',
+                        'description' => 'JSON Web Token & Refresh Token.',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
@@ -88,17 +82,90 @@ class OpenApiFactory implements OpenApiFactoryInterface
                                 ]
                             ]
                         ]
-                    ]
+                    ],
+                    '401' => [
+                        'description' => 'Invalid Credentials',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'code' => [
+                                            'type' => 'int',
+                                            'example' => 401
+                                        ],
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'Invalid credentials.'
+                                        ],                                        
+                                    ]
+                                ]
+                            ]
+                        ]                        
+                    ],
                 ],
                 security: []
             )
         );
         $openApi->getPaths()->addPath('/api/authenticate', $loginPathItem);
 
-        // // Another example for Who Am I (requiring useless id)
-        // $whoAmIOperation = $openApi->getPaths()->getPath('/api/whoami')->getGet()->withParameters([]);
-        // $whoAmIPathItem = $openApi->getPaths()->getPath('/api/whoami')->withGet($whoAmIOperation);
-        // $openApi->getPaths()->addPath('/api/whoami', $whoAmIPathItem);
+        $refreshTokenPathItem = new PathItem(
+            post: new Operation(
+                operationId: 'postRefreshToken',
+                tags: ['Authentication'],
+                requestBody: new RequestBody(
+                    description: 'Your Refresh Token',
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/Refresh_Token'
+                            ]
+                        ]
+                    ])
+                ),
+                summary: 'Retrieves new JSON Web Token & new Refresh Token from previous Refresh Token.',
+                responses: [
+                    '200' => [
+                        'description' => 'new JSON Web Token & new Refresh Token.',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/Token'
+                                ]
+                            ]
+                        ]
+                    ],
+                    '401' => [
+                        'description' => 'No "refresh_token" field specified / Invalid or Expired refresh_token',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'code' => [
+                                            'type' => 'int',
+                                            'example' => 401
+                                        ],
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'Invalid JWT Refresh Token'
+                                        ],                                        
+                                    ]
+                                ]
+                            ]
+                        ]                        
+                    ],
+                ],
+                security: []
+            )
+        );
+        $openApi->getPaths()->addPath('/api/token/refresh', $refreshTokenPathItem);
+
+
+        # Path editing (requiring useless id by default)
+        $meOperation = $openApi->getPaths()->getPath('/api/me')->getGet()->withParameters([]);
+        $mePathItem = $openApi->getPaths()->getPath('/api/me')->withGet($meOperation);
+        $openApi->getPaths()->addPath('/api/me', $mePathItem);
 
         return $openApi;
     }

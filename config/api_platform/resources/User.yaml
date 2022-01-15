@@ -18,24 +18,21 @@ App\Entity\User:
     post:
       denormalization_context:
         groups: [write:User]
-    me:
-      method: GET
-      path: /me
-      controller: App\Controller\UserMeController
-      pagination_enabled: false
-      read: false
-      filters: []
-      normalization_context:
-        groups: [read:User:item, read:User:collection]
-      openapi_context:
-        summary: Retrieves current authenticated User.
-        description: Retrieves current authenticated User.
-        
+
   itemOperations:
     get:
       normalization_context:
         groups: [read:User:item, read:User:collection]
         openapi_definition_name: Item
     delete: ~
-
+    me:
+      method: GET
+      path: /me
+      controller: App\Controller\UserMeController
+      read: false
+      normalization_context:
+        groups: [read:User:item, read:User:collection]
+      openapi_context:
+        summary: Retrieves current authenticated User.
+        description: Retrieves current authenticated User.
       
