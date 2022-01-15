@@ -1,0 +1,13 @@
+# app/config/serialization/
+
+App\Entity\Brand:
+  attributes:
+    id:
+      groups: [read:Brand:collection, read:Phone:item]
+    name:
+      groups: [read:Brand:collection, write:Brand, read:Phone:item, read:Phone:collection, write:Phone]
+    createdAt:
+      groups: [read:Brand:collection, read:Phone:item]
+    phones:
+      groups: [read:Brand:item]
+        

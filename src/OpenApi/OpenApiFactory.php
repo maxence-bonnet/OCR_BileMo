@@ -28,12 +28,12 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
 
         // Building Login JWT
-        $schemas = $openApi->getComponents()->getSecuritySchemes();
-        $schemas['bearerAuth'] = new \ArrayObject([ // Stateless login
-            'type' => 'http',
-            'scheme' => 'bearer',
-            'bearerFormat' => 'JWT'
-        ]);
+        // $schemas = $openApi->getComponents()->getSecuritySchemes();
+        // $schemas['bearerAuth'] = new \ArrayObject([ // Stateless login
+        //     'type' => 'http',
+        //     'scheme' => 'bearer',
+        //     'bearerFormat' => 'JWT'
+        // ]);
 
         $schemas = $openApi->getComponents()->getSchemas();
         $schemas['Credentials'] = new \ArrayObject([
@@ -63,11 +63,12 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ]
         ]);
 
-        $pathItem = new PathItem(
+        $loginPathItem = new PathItem(
             post: new Operation(
-                operationId: 'postApiLogin',
+                operationId: 'postCredentials',
                 tags: ['Authentication'],
                 requestBody: new RequestBody(
+                    description: 'Your Credentials',
                     content: new \ArrayObject([
                         'application/json' => [
                             'schema' => [
@@ -76,9 +77,10 @@ class OpenApiFactory implements OpenApiFactoryInterface
                         ]
                     ])
                 ),
+                summary: 'Retrieves JSON Web Token & refresh token from Credentials.',
                 responses: [
                     '200' => [
-                        'description' => 'Succes Token JWT',
+                        'description' => 'JSON Web Token & refresh token.',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
@@ -87,10 +89,11 @@ class OpenApiFactory implements OpenApiFactoryInterface
                             ]
                         ]
                     ]
-                ]
+                ],
+                security: []
             )
         );
-        $openApi->getPaths()->addPath('/api/login', $pathItem);
+        $openApi->getPaths()->addPath('/api/authenticate', $loginPathItem);
 
         // // Another example for Who Am I (requiring useless id)
         // $whoAmIOperation = $openApi->getPaths()->getPath('/api/whoami')->getGet()->withParameters([]);

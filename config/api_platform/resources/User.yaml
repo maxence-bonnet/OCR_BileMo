@@ -1,0 +1,41 @@
+# app/config/api_platform/resources/
+
+App\Entity\User:
+  attributes: 
+    formats: [jsonld, jsonhal, json, xml]   
+    pagination_items_per_page: 10
+    pagination_maximum_items_per_page: 20
+    pagination_client_items_per_page: true
+    denormalization_context:
+      groups: [write:User]
+      openapi_definition_name: Item
+    normalization_context:
+      groups: [read:User:collection]
+      openapi_definition_name: Collection
+
+  collectionOperations:
+    get: ~
+    post:
+      denormalization_context:
+        groups: [write:User]
+    me:
+      method: GET
+      path: /me
+      controller: App\Controller\UserMeController
+      pagination_enabled: false
+      read: false
+      filters: []
+      normalization_context:
+        groups: [read:User:item, read:User:collection]
+      openapi_context:
+        summary: Retrieves current authenticated User.
+        description: Retrieves current authenticated User.
+        
+  itemOperations:
+    get:
+      normalization_context:
+        groups: [read:User:item, read:User:collection]
+        openapi_definition_name: Item
+    delete: ~
+
+      

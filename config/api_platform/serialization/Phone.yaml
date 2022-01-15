@@ -1,0 +1,24 @@
+# app/config/serialization/
+
+App\Entity\Phone:
+  attributes:
+    id:
+      groups: [read:Phone:collection, read:Brand:item]
+    createdAt:
+      groups: [read:Phone:item]
+    model:
+      groups: [read:Phone:collection, read:Brand:item]
+    releasedAt:
+      groups: [read:Phone:collection, write:Phone]
+    weight:
+      groups: [read:Phone:collection, write:Phone]
+    price:
+      groups: [read:Phone:collection, write:Phone]
+    brand:
+      groups: [read:Phone:collection, write:Phone]
+      openapi_context:
+        type: App/Entity/Brand
+        description: Brand of the Phone
+        example: WoopWoop
+    clients:
+      groups: []

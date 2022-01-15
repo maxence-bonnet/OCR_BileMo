@@ -1,0 +1,107 @@
+# app/config/api_platform/resources/
+
+App\Entity\Phone:
+  attributes: 
+    formats: [jsonld, jsonhal, json, xml]   
+    pagination_items_per_page: 10
+    pagination_maximum_items_per_page: 20
+    pagination_client_items_per_page: true
+    denormalization_context:
+      groups: [write:Phone]
+      openapi_definition_name: Collection
+    normalization_context:
+      groups: [read:Phone:collection]
+      openapi_definition_name: Item
+    validation_groups: [write:Phone]
+
+  collectionOperations:
+    get:
+      normalization_context:
+        groups: [read:Phone:collection]
+    post:
+      # security: is_granted("ROLE_ADMIN")
+      denormalization_context:
+        groups: [write:Phone]
+      openapi_context:
+        summary: Creates a Phone resource (Admin only).
+        description: Creates a Phone resource (Admin only).        
+    getMyList:
+      method: GET
+      path: /phones/get_my_list
+      controller: App\Controller\PhoneController
+      openapi_context:
+        summary: Retrieves the collection of Phone resources from Client's List.
+        description: Retrieves the collection of Phone resources from Client's List.
+    count:
+      method: GET
+      path: /phones/count
+      controller: App\Controller\PhoneController
+      filters: []
+      pagination_enabled: false
+      openapi_context:
+        summary: Retrieves total number of phones.
+        description: Retrieves total number of phones.
+        parameters:
+          - 
+            in: query
+            name: brand
+            example: Wiplo
+            description: Filters by brand(s) name or id.
+        responses:
+          200:
+            description: Number of phones
+            content:
+              application/json:
+                schema:
+                  type: integer
+                  example: 24
+
+  itemOperations: 
+    get:
+      normalization_context:
+        groups: [read:Phone:item, read:Phone:collection]
+    put:
+      # security: is_granted("ROLE_ADMIN")
+      openapi_context:
+        summary: Replaces the Phone resource (Admin only).
+        description: Replaces the Phone resource (Admin only).     
+    patch:
+      # security: is_granted("ROLE_ADMIN")
+      openapi_context:
+        summary: Updates the Phone resource (Admin only).
+        description: Updates the Phone resource (Admin only). 
+    delete:
+      # security: is_granted("ROLE_ADMIN")
+      openapi_context:
+        summary: Removes the Phone resource (Admin only).
+        description: Removes the Phone resource (Admin only).               
+    addToClientList:
+      method: PATCH
+      path: /phones/{id}/add_to_my_list
+      controller: App\Controller\PhoneController
+      filters: []
+      validation_groups: []
+      denormalization_context:
+        groups: []      
+      pagination_enabled: false
+      openapi_context:
+        summary: Adds the Phone resource to Client's list.
+        description: Adds the Phone resource to Client's list.
+        requestBody:
+            content:
+              application/merge-patch+json:
+                schema:
+                  type: object
+    removeFromClientList:
+      method: PATCH
+      path: /phones/{id}/remove_from_my_list
+      controller: App\Controller\PhoneController
+      filters: []
+      validation_groups: []
+      denormalization_context:
+        groups: []      
+      pagination_enabled: false
+      openapi_context:
+        summary: Removes the Phone resource from Client's list.
+        description: Removes the Phone resource from Client's list.
+      

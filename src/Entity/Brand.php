@@ -2,47 +2,29 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
-// #[ApiResource(
-//     paginationItemsPerPage: 10,
-//     paginationMaximumItemsPerPage: 20,
-//     paginationClientItemsPerPage: true,
-//     normalizationContext: ['groups' => ['read:Brand:collection']],
-//     itemOperations: [
-//         'get' => [
-//             'normalization_context' => ['groups' => ['read:Brand:item']]
-//         ]
-//     ],
-//     collectionOperations: [
-//         'get'
-//     ]
-// )]
+#[UniqueEntity('name', message: 'La marque {{ value }} existe déjà', groups: ['write:Brand', 'write:Phone'])]
 class Brand
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['read:Phone:item', 'read:Brand:item'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[
-        Groups(['read:Phone:collection', 'write:Phone', 'read:Brand:collection', 'read:Brand:item']),
-        Length(min: 2, max: 30, minMessage: 'Brand name is too short', maxMessage: 'Brand name is too long', groups: ['create:Phone'])
+        Length(min: 2, max: 30, minMessage: 'Brand name is too short', maxMessage: 'Brand name is too long', groups: ['write:Brand', 'write:Phone'])
     ]
     private $name;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['read:Phone:item', 'read:Brand:collection', 'read:Brand:item'])]
     private $createdAt;
 
     #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Phone::class, orphanRemoval: true)]

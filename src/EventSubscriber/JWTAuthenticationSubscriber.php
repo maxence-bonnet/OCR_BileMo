@@ -13,6 +13,11 @@ class JWTAuthenticationSubscriber implements EventSubscriberInterface
         $user = $event->getUser();
         if ($user instanceof User) {
             $data['id'] = $user->getId();
+            if ($user->getClient()) {
+                $data['client']['id'] = $user->getClient()->getId();
+                $data['client']['name'] = $user->getClient()->getName();
+                $data['client']['createdAt'] = $user->getClient()->getCreatedAt();                
+            }
         }
         $event->setData($data);
     }

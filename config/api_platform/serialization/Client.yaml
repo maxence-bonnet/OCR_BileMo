@@ -1,0 +1,15 @@
+# app/config/serialization/
+
+App\Entity\Client:
+  attributes:
+    id:
+      groups: [read:Client:item, read:User:item]
+    name:
+      groups: [read:Client:collection, write:Client, read:User:item]      
+    users:
+      groups: [read:Client:item]
+    createdAt:
+      groups: [read:Client:collection, read:User:item]
+    phonesList:
+      groups: [read:Client:item]
+    

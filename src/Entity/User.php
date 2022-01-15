@@ -6,129 +6,33 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
-use App\Controller\UserRolesController;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Email;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource(
-    // security: 'is_granted("ROLE_CLIENT_ADMIN")',
-    formats: ['jsonld', 'jsonhal', 'json', 'xml'],
-    paginationItemsPerPage: 10,
-    paginationMaximumItemsPerPage: 20,
-    paginationClientItemsPerPage: true, 
-    denormalizationContext: [
-        'groups' => ['write:User'],
-        'openapi_definition_name' => 'Item'
-    ],
-    normalizationContext: [
-        'groups' => ['read:User:collection'],
-        'openapi_definition_name' => 'Collection'
-    ],
-    collectionOperations: [
-        'get' => [
-
-        ],
-        'post' => [
-            // 'security' => 'is_granted("ROLE_CLIENT_ADMIN")',
-        ],
-    ],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => [
-                'groups' => ['read:User:item']
-            ]
-        ],
-        'upgrade' => [
-            // 'security' => 'is_granted("ROLE_SUPER_ADMIN")',
-            'path' => '/users/{id}/upgrade',
-            'controller' => UserRolesController::class, 
-            'method' => 'POST',
-            'write' => false,
-            'openapi_context' => [
-                'security' => [
-                    ['bearerAuth' => []]
-                ],
-                'summary' => 'Upgrade user role',
-                'description' => 'Upgrade user role',
-                'requestBody' => [
-                    'content' => [
-                        'application/json' => [
-                            'schema' => [],
-                            'example' => '{}'
-                        ]
-                    ]
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Upgraded user',
-                        'content' => [
-                            //
-                        ]
-                    ]
-                ]
-            ]
-        ],
-        'downgrade' => [
-            // 'security' => 'is_granted("ROLE_SUPER_ADMIN")',
-            'path' => '/users/{id}/downgrade',
-            'controller' => UserRolesController::class, 
-            'method' => 'POST',
-            'write' => false,
-            'openapi_context' => [
-                'security' => [
-                    ['bearerAuth' => []]
-                ],
-                'summary' => 'Downgrade user role',
-                'description' => 'Downgrade user role',
-                'requestBody' => [
-                    'content' => [
-                        'application/json' => [
-                            'schema' => [],
-                            'example' => '{}'
-                        ]
-                    ]
-                ],
-                'responses' => [
-                    '200' => [
-                        'description' => 'Downgraded user',
-                        'content' => [
-                            //
-                        ]
-                    ]
-                ]
-            ]
-        ],
-        'delete' => [
-        ],
-    ]
-)]
-#[ApiFilter(SearchFilter::class, properties: ['client' => 'exact'])] // 
+#[ApiFilter(SearchFilter::class, properties: ['client' => 'exact'])]
+#[UniqueEntity('email', message: 'L\'email {{ value }} est déjà utilisé', groups: ['write:User'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['read:User:item'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Groups(['read:User:collection', 'write:User'])]
+    #[Email(groups: ['write:User'])]
     private $email;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['read:User:item'])]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
-    #[Groups(['write:User'])]
     private $password;
 
     #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'users')]
-    #[Groups(['read:User:collection', 'write:User'])]
     private $client;
 
     public function getId(): ?int
@@ -154,10 +58,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
         return $this;
     }
 
-    // Customize JWT
-    public static function createFromPayload($username, array $payload)
+    public static function createFromPayload($username, array $payload): JWTUserInterface
     {
-        return (new self())->setEmail($username)->setId($payload['id'] ?? null);
+        $user = (new User())
+            ->setId($payload['id'] ?? null)
+            ->setEmail($username)
+            ->setRoles($payload['roles'] ?? null);
+
+        if (key_exists('client', $payload)) {
+            $user->setClient(
+                (new Client())
+                    ->setId($payload['client']['id'] ?? null)
+                    ->setName($payload['client']['name'] ?? null)
+                    ->setCreatedAt(new \DateTimeImmutable($payload['client']['createdAt']['date']))
+            );                          
+        }
+        return $user;
     }
 
     /**

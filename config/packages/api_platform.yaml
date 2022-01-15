@@ -7,11 +7,22 @@ api_platform:
         yaml:     ['application/x-yaml']
         xml:      ['application/xml', 'text/xml']
         html:     ['text/html']
+
     mapping:
-        paths: ['%kernel.project_dir%/src/Entity']
+        paths: ['%kernel.project_dir%/src/Entity', '%kernel.project_dir%/config/api_platform/resources']
+
     patch_formats:
         json: ['application/merge-patch+json']
+
     swagger:
         versions: [3]
-        
+        api_keys:
+          apiKey:
+            name: Authorization
+            type: header
+
     show_webby: false
+    
+    title: 'BileMo'
+    description: 'API catalogue de téléphones'
+    version: '0.1.0'

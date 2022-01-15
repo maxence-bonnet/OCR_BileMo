@@ -1,0 +1,44 @@
+# app/config/api_platform/resources/
+
+App\Entity\Client:
+  attributes:
+    formats: [jsonld, jsonhal, json, xml]
+    pagination_items_per_page: 10
+    pagination_maximum_items_per_page: 20
+    pagination_client_items_per_page: true
+    denormalization_context:
+      groups: [write:Client]
+    normalization_context:
+      groups: [read:Client:collection]
+
+  collectionOperations:
+    get:
+      # security: is_granted("ROLE_ADMIN")
+      openapi_context:
+        summary: Retrieves the collection of Client resources (Admin only).
+        description: Retrieves the collection of Client resources (Admin only).    
+      normalization_context:
+        groups: [read:Client:collection]
+        openapi_definition_name: Collection
+    post:
+      # security: is_granted("ROLE_ADMIN")
+      openapi_context:
+        summary: Creates a Client resource (Admin only).
+        description: Creates a Client resource (Admin only).
+      denormalization_context:
+        groups: [write:Client]             
+
+  itemOperations:
+    get:
+      # security: is_granted("ROLE_ADMIN")
+      openapi_context:
+        summary: Retrieves a Client resource (Admin only).
+        description: Retrieves a Client resource (Admin only).    
+      normalization_context:
+        groups: [read:Client:item]
+        openapi_definition_name: Item
+    delete:
+      # security: is_granted("ROLE_ADMIN")
+      openapi_context:
+        summary: Removes the Client resource (Admin only).
+        description: Removes the Client resource (Admin only).

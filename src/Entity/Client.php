@@ -6,61 +6,27 @@ use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-#[ApiResource(
-    formats: ['jsonld', 'jsonhal', 'json', 'xml'],
-    paginationItemsPerPage: 10,
-    paginationMaximumItemsPerPage: 20,
-    paginationClientItemsPerPage: true, 
-    denormalizationContext: [
-        'groups' => ['write:Client'],
-    ],
-    normalizationContext: [
-        'groups' => ['read:Client:collection'],
-    ],
-    collectionOperations: [
-        'get' => [
-        ],
-        'post' => [
-            // 'security' => 'is_granted("ROLE_SUPER_ADMIN")',
-        ],
-    ],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => [
-                'groups' => ['read:Client:collection', 'read:Client:item']
-            ]
-        ],
-        'delete' => [
-
-        ],
-    ]
-)]
+#[UniqueEntity('name', message: 'Le nom {{ value }} existe déjà', groups: ['write:Client', 'write:User'])]
 class Client
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['read:Client:item'])]
     private $id;
 
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: User::class)]
-    #[Groups(['read:Client:item'])]
-    private $users;
-
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['read:Client:collection', 'write:Client', 'read:User:item'])]
     private $name;
 
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: User::class)]
+    private $users;
+
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['read:Client:collection', 'read:User:item'])]
     private $createdAt;
 
     #[ORM\ManyToMany(targetEntity: Phone::class, inversedBy: 'clients')]
-    #[Groups(['read:Client:item'])]
     private $phonesList;
 
     public function __construct()
@@ -73,6 +39,25 @@ class Client
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -101,18 +86,6 @@ class Client
                 $user->setClient(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
 
         return $this;
     }

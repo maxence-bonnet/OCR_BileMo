@@ -22,11 +22,11 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
-            pattern: ^/api/login
+            pattern: ^/api/authenticate
             stateless: true
             provider: app_user_provider
             json_login:
-                check_path: /api/login
+                check_path: /api/authenticate
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
@@ -36,15 +36,13 @@ security:
             jwt: ~
 
     access_control:
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/admin, roles: ROLE_SUPER_ADMIN}
-        - { path: ^/api/client/admin, roles: ROLE_CLIENT_ADMIN}
-        - { path: ^/api/whoami, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api, roles: PUBLIC_ACCESS }
+        - { path: ^/api/docs$, roles: PUBLIC_ACCESS } # Allows access to documentation
+        - { path: ^/api/authenticate, roles: PUBLIC_ACCESS }
+        - { path: ^/api/clients, roles: ROLE_ADMIN }
+        - { path: ^/, roles: PUBLIC_ACCESS } # IS_AUTHENTICATED_FULLY later
 
     role_hierarchy:
-            ROLE_CLIENT_ADMIN: ROLE_USER
-            ROLE_SUPER_ADMIN: [ROLE_CLIENT_ADMIN, ROLE_USER]
+            ROLE_ADMIN : [ROLE_USER]
 when@test:
     security:
         password_hashers:
