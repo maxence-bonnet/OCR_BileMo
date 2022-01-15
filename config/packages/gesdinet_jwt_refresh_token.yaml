@@ -1,0 +1,7 @@
+gesdinet_jwt_refresh_token:
+    firewall: api_token_refresh  # default "api"
+    ttl: 604800 # 1 week, default 2592000 (1 mounth)
+    manager_type: orm # default
+    user_identity_field: id  # not working anymore (sad)
+    single_use: true  # default false (reset refresh token after each use)
+    token_parameter_name: refresh_token # default
