@@ -6,6 +6,7 @@ App\Entity\User:
     pagination_items_per_page: 10
     pagination_maximum_items_per_page: 20
     pagination_client_items_per_page: true
+    validation_groups: ['write:User']
     denormalization_context:
       groups: [write:User]
       openapi_definition_name: Item
