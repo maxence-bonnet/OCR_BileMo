@@ -25,7 +25,8 @@ App\Entity\User:
       normalization_context:
         groups: [read:User:item, read:User:collection]
         openapi_definition_name: Item
-    delete: ~
+    delete:
+      security: 'is_granted("DELETE", object)'
     me:
       method: GET
       path: /me
