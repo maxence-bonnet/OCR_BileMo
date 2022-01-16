@@ -7,7 +7,7 @@ App\Entity\Phone:
     createdAt:
       groups: [read:Phone:item]
     model:
-      groups: [read:Phone:collection, read:Brand:item]
+      groups: [read:Phone:collection, write:Phone, read:Brand:item]
     releasedAt:
       groups: [read:Phone:collection, write:Phone]
     weight:
@@ -19,6 +19,6 @@ App\Entity\Phone:
       openapi_context:
         type: App/Entity/Brand
         description: Brand of the Phone
-        example: WoopWoop
+        example: /api/brands/1
     clients:
       groups: []
