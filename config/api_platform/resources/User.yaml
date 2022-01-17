@@ -2,6 +2,7 @@
 
 App\Entity\User:
   attributes: 
+    security: is_granted("ROLE_USER")
     formats: [jsonld, jsonhal, json, xml]   
     pagination_items_per_page: 10
     pagination_maximum_items_per_page: 20
@@ -25,8 +26,19 @@ App\Entity\User:
       normalization_context:
         groups: [read:User:item, read:User:collection]
         openapi_definition_name: Item
+    patch:
+      # thanks to App\Doctrine\CurrentUserExtension, 
+      # current User will not be able to update Client
+      security: 'is_granted("EDIT", object)'
+      validation_groups: ['update:User']
+      denormalization_context:
+        groups: ['update:User']
     delete:
       security: 'is_granted("DELETE", object)'
+      openapi_context:
+        responses:
+            403:
+              description: Access Denied
     me:
       method: GET
       path: /me

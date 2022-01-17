@@ -35,8 +35,8 @@ class Phone
 
     #[ORM\Column(type: 'string', length: 255)]
     #[
-        NotBlank(message: 'Phone model can not be null or blank', groups: ['write:Phone']),
-        Length(min: 1, max: 25, maxMessage: 'Phone model is too long', groups: ['write:Phone'])
+        NotBlank(message: 'Phone model can not be null or blank', groups: ['replace:Phone', 'write:Phone']),
+        Length(min: 1, max: 25, maxMessage: 'Phone model is too long', groups: ['replace:Phone', 'write:Phone'])
     ]
     private string $model;
 
@@ -52,8 +52,8 @@ class Phone
 
     #[ORM\Column(type: 'float')]
     #[
-        GreaterThan(value: 99, message: 'Phone weight seems too low', groups: ['write:Phone']),
-        LessThan(value: 1001, message: 'Phone weight seems too high', groups: ['write:Phone']),
+        GreaterThan(value: 99, message: 'Phone weight seems too low', groups: ['replace:Phone', 'write:Phone']),
+        LessThan(value: 1001, message: 'Phone weight seems too high', groups: ['replace:Phone', 'write:Phone']),
         ApiProperty(
             openapiContext: [
                 'description' => 'Weight of the phone [g]',
@@ -65,8 +65,8 @@ class Phone
 
     #[ORM\Column(type: 'float')]
     #[
-        GreaterThan(value: 15, message: 'Phone is too cheap', groups: ['write:Phone']),
-        LessThan(value: 10000, message: 'Phone is too expensive', groups: ['write:Phone']),
+        GreaterThan(value: 15, message: 'Phone is too cheap', groups: ['update:Phone', 'replace:Phone', 'write:Phone']),
+        LessThan(value: 10000, message: 'Phone is too expensive', groups: ['update:Phone', 'replace:Phone', 'write:Phone']),
         ApiProperty(
             openapiContext: [
                 'description' => 'Price of the phone [EUR]',
@@ -79,14 +79,7 @@ class Phone
     #[ORM\ManyToOne(targetEntity: Brand::class, inversedBy: 'phones', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     #[
-        Valid(groups: ['write:Phone']),
-        ApiProperty(
-            openapiContext: [
-                'type' => Brand::class,
-                'description' => 'Brand of the phone',
-                'example' => 'WoopWoop'
-            ],
-        )
+        Valid(groups: ['replace:Phone', 'write:Phone']),
     ]
     private Brand $brand;
 

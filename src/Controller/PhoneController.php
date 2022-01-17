@@ -5,13 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Phone;
 use App\Entity\Client;
+use App\Exception\NoPhoneListAvailableException;
 use App\Repository\PhoneRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
-class PhoneController extends AbstractController
+class PhoneController
 {
     const ADD_TO_LIST = 'add_to_my_list';
     const REMOVE_FROM_LIST = 'remove_from_my_list';
@@ -75,6 +75,10 @@ class PhoneController extends AbstractController
      */
     private function getClientPhonesList()
     {
+        if (null === $this->security->getUser()->getClient()) {
+            throw new NoPhoneListAvailableException("No list of Phones could be associated with the current User");
+        }
+
         $client = $this->getUserClient();
         return $this->phoneRepository->findByClient((int)$client->getId());
     }
@@ -88,7 +92,7 @@ class PhoneController extends AbstractController
     {
         return $this->entityManager
             ->getRepository(User::class)
-            ->findOneBy(['id' => $this->getUser()->getId()])
+            ->findOneBy(['id' => $this->security->getUser()->getId()])
             ->getClient();
     }
 

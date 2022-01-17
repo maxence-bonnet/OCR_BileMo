@@ -14,10 +14,24 @@ api_platform:
         html:     ['text/html']
 
     mapping:
-        paths: ['%kernel.project_dir%/config/api_platform/resources']
+        paths: ['%kernel.project_dir%/src/Entity', '%kernel.project_dir%/config/api_platform/resources']
 
     patch_formats:
         json: ['application/merge-patch+json']
+
+    exception_to_status:
+        # The 4 following handlers are registered by default, keep those lines to prevent unexpected side effects
+        Symfony\Component\Serializer\Exception\ExceptionInterface: 400 # Use a raw status code (recommended)
+        ApiPlatform\Core\Exception\InvalidArgumentException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST
+        ApiPlatform\Core\Exception\FilterValidationException: 400
+        Doctrine\ORM\OptimisticLockException: 409
+
+        # Validation exception
+        ApiPlatform\Core\Bridge\Symfony\Validator\Exception\ValidationException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY
+
+        # Custom mapping
+        App\Exception\NoPhoneListAvailableException: 404
+        App\Exception\UserSelfDeleteException: 403
 
     defaults:
         cache_headers:

@@ -2,10 +2,12 @@
 
 App\Entity\Brand:
   attributes:
+    security: is_granted("ROLE_USER")
     formats: [jsonld, jsonhal, json, xml]
     pagination_items_per_page: 10
     pagination_maximum_items_per_page: 20
     pagination_client_items_per_page: true
+    validation_groups: ['write:Brand']
 
   collectionOperations:
     get:
@@ -13,7 +15,7 @@ App\Entity\Brand:
         groups: [read:Brand:collection]
         openapi_definition_name: Collection
     post:
-      # security: is_granted("ROLE_ADMIN")
+      security: is_granted("ROLE_ADMIN")
       denormalization_context:
         groups: [write:Brand]
       openapi_context:
@@ -26,21 +28,21 @@ App\Entity\Brand:
         groups: [read:Brand:item, read:Brand:collection]
         openapi_definition_name: Item
     put: 
-      # security: is_granted("ROLE_ADMIN")
+      security: is_granted("ROLE_ADMIN")
       denormalization_context:
         groups: [write:Brand]
       openapi_context:
         summary: Replaces the Brand resource (Admin only).
         description: Replaces the Brand resource (Admin only).        
     patch:
-      # security: is_granted("ROLE_ADMIN")
+      security: is_granted("ROLE_ADMIN")
       denormalization_context:
         groups: [write:Brand]
       openapi_context:
         summary: Updates the Brand resource (Admin only).
         description: Updates the Brand resource (Admin only).        
     delete:
-      # security: is_granted("ROLE_ADMIN")
+      security: is_granted("ROLE_ADMIN")
       openapi_context:
-        summary: Removes the Brand resource (Admin only).
-        description: Removes the Brand resource (Admin only).      
+        summary: Removes the Brand resource and all its related Phone resources (Admin only).
+        description: Removes the Brand resource and all its related Phone resources (Admin only).      

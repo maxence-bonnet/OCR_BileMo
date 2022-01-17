@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\User;
+use App\Exception\UserSelfDeleteException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -11,6 +12,8 @@ class UserVoter extends Voter
 {
     private const DELETE = 'DELETE';
 
+    private const EDIT = 'EDIT';
+
     public function __construct(private Security $security)
     {
 
@@ -18,7 +21,7 @@ class UserVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        $supportsAttribute = in_array($attribute, [self::DELETE]);
+        $supportsAttribute = in_array($attribute, [self::DELETE, self::EDIT]);
         $supportsSubject = $subject instanceof User;
 
         return $supportsAttribute && $supportsSubject;
@@ -50,6 +53,9 @@ class UserVoter extends Voter
         }
 
         switch ($attribute) {
+            case self::EDIT:
+                return $this->canEdit($currentUser, $user);
+                break;
             case self::DELETE:
                 return $this->canDelete($currentUser, $user);
                 break;
@@ -58,6 +64,11 @@ class UserVoter extends Voter
         }
 
         throw new \LogicException('This code should not be reached!');
+    }
+
+    private function canEdit(User $currentUser, User $user): bool
+    {
+        return $this->haveSameClient($currentUser, $user);
     }
 
     /**
@@ -72,8 +83,20 @@ class UserVoter extends Voter
      */
     private function canDelete(User $currentUser, User $user): bool
     {
-        $sameClient = $currentUser->getClient()->getId() === $user->getClient()->getId();
-        return $sameClient && $this->notSelfDelete($currentUser, $user);
+        return $this->haveSameClient($currentUser, $user) && $this->notSelfDelete($currentUser, $user);
+    }
+
+    /**
+     * Checks if both users have the same Client
+     * 
+     * @param User $currentUser
+     * @param User $user
+     * 
+     * @return bool
+     */
+    private function haveSameClient(User $currentUser, User $user): bool
+    {
+        return $currentUser->getClient()->getId() === $user->getClient()->getId();
     }
 
     /**
@@ -83,9 +106,14 @@ class UserVoter extends Voter
      * @param User $user
      * 
      * @return bool
+     * 
+     * @throws UserSelfDeleteException
      */
     private function notSelfDelete(User $currentUser, User $user): bool
     {
-        return $currentUser->getId() !== $user->getId();
+        if ($currentUser->getId() !== $user->getId()) {
+            return true;
+        }
+        throw new UserSelfDeleteException('For safety reasons, Users are not allowed to delete themself. Please contact an administrator if you are sure you want to do so.');
     }
 }

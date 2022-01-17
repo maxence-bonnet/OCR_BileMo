@@ -13,7 +13,7 @@ App\Entity\Phone:
     weight:
       groups: [read:Phone:collection, write:Phone]
     price:
-      groups: [read:Phone:collection, write:Phone]
+      groups: [read:Phone:collection, update:Phone, write:Phone]
     brand:
       groups: [read:Phone:collection, write:Phone]
       openapi_context:

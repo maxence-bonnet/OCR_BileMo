@@ -5,10 +5,10 @@ App\Entity\User:
     id:
       groups: [read:User:collection]
     email:
-      groups: [read:User:collection, write:User]
+      groups: [read:User:collection, update:User, write:User]
     roles:
       groups: [read:User:item]
     password:
       groups: [write:User]
     client:
-      groups: [read:User:item]
+      groups: [read:User:item, update:User, read:User:collection]

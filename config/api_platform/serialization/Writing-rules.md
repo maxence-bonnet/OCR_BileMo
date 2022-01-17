@@ -1,7 +1,7 @@
 # Writing rules for Groups order
 
  - 1) [current entity operation] > [foreign entity operation]
- - 2) [read operation] > [write operation]
+ - 2) [read operation] > [update operation] > [replace operation] > [write operation]
  - 3) [item operation] > [collection operation]
 
  ## Example

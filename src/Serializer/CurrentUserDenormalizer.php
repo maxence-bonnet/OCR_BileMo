@@ -61,6 +61,6 @@ class CurrentUserDenormalizer implements ContextAwareDenormalizerInterface, Deno
     public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])
     {
         $alreadyCalled = $context[self::ALREADY_CALLED_DENORMALIZER] ?? false;
-        return ((User::class === $type || $this->security->isGranted('ROLE_ADMIN')) && false === $alreadyCalled);
+        return (User::class === $type && false === $alreadyCalled);
     }
 }

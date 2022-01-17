@@ -20,7 +20,7 @@ class Brand
 
     #[ORM\Column(type: 'string', length: 255)]
     #[
-        Length(min: 2, max: 30, minMessage: 'Brand name is too short', maxMessage: 'Brand name is too long', groups: ['write:Brand', 'write:Phone'])
+        Length(min: 2, max: 30, minMessage: 'Brand name is too short', maxMessage: 'Brand name is too long', groups: ['write:Brand', 'replace:Phone', 'write:Phone'])
     ]
     private $name;
 

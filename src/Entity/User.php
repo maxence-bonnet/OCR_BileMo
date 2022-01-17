@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints\Email;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiFilter(SearchFilter::class, properties: ['client' => 'exact'])]
-#[UniqueEntity('email', message: 'L\'email {{ value }} est déjà utilisé', groups: ['write:User'])]
+#[UniqueEntity('email', message: 'L\'email {{ value }} est déjà utilisé', groups: ['write:User', 'update:User'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
     #[ORM\Id]
@@ -23,7 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    #[Email(groups: ['write:User'])]
+    #[Email(groups: ['write:User', 'update:User'])]
     private $email;
 
     #[ORM\Column(type: 'json')]

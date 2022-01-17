@@ -17,10 +17,10 @@ class Client
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private $name;
 
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: User::class, orphanRemoval: true)]
     private $users;
 
     #[ORM\Column(type: 'datetime_immutable')]

@@ -5,7 +5,7 @@ App\Entity\Client:
     id:
       groups: [read:Client:item, read:User:item]
     name:
-      groups: [read:Client:collection, write:Client, read:User:item]      
+      groups: [read:Client:collection, write:Client, read:User:item, read:User:collection]      
     users:
       groups: [read:Client:item]
     createdAt:
