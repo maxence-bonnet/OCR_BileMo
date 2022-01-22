@@ -46,7 +46,9 @@ security:
             jwt: ~
  
     access_control:
-        - { path: ^/api/docs$, roles: PUBLIC_ACCESS } # Allows access to documentation
+        - { path: ^/api$, roles: PUBLIC_ACCESS } # Allows access for react-admin
+        - { path: ^/api/contexts, roles: PUBLIC_ACCESS } # Allows access for react-admin
+        - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows access to documentation
         - { path: ^/api/authenticate$, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh$, roles: PUBLIC_ACCESS }
         - { path: ^/api/clients, roles: ROLE_ADMIN }
