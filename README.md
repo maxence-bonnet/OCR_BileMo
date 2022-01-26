@@ -85,11 +85,37 @@ DATABASE_URL="mysql://my_user_identifier:my_user_pass@127.0.0.1:3306/my_db_name?
 # exemple : DATABASE_URL="mysql://root:@127.0.0.1:3306/bilemo_api?serverVersion=mariadb-10.4.18"
 ###< doctrine/doctrine-bundle ###
 ```
+
+Then declare the location of the public & private keys for authentication (see below)
+
+```env 
+###> lexik/jwt-authentication-bundle ###
+JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+JWT_PASSPHRASE=mystrongpass
+###< lexik/jwt-authentication-bundle ###
+```
 #### NB: I recommend creating the `.env.local` file (ignored in commits) rather than using the `.env` to avoid committing sensitive data
 
 ---
+### 4. Generate public and private keys for JSON Web Token authentication 
 
-### 4. Generating database
+This is related with [Lexik JWT Authentication](#significant-bundles-used)
+
+```
+php bin/console lexik:jwt:generate-keypair
+```
+If, for some reasons your system does not manage to find openssl directly from the previous command, you can manually create the keypairs with the following commands:
+
+```
+mkdir -p config/jwt
+openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
+openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
+```
+
+---
+
+### 5. Generating database
 
 you can use `symfony console` instead of `php bin/console` if you have [Symfony cli](https://symfony.com/download) installed (like I did)
 
@@ -112,30 +138,6 @@ php bin/console doctrine:fixtures:load
 ```
 
 ---
-### 5. Generate public and private keys for JSON Web Token authentication 
-
-This is related with [Lexik JWT Authentication](#significant-bundles-used)
-
-```
-php bin/console lexik:jwt:generate-keypair
-```
-If, for some reasons your system does not manage to find openssl directly from the previous command, you can manually create the keypairs with the following commands:
-
-```
-mkdir -p config/jwt
-openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
-openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
-```
-
-Then, in your `.env` or `.env.local`, declare the location of the keys and passphrase
-
-```env 
-###> lexik/jwt-authentication-bundle ###
-JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
-JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
-JWT_PASSPHRASE=mystrongpass
-###< lexik/jwt-authentication-bundle ###
-```
 
 ### 6. Run your local server
 
@@ -157,8 +159,20 @@ notice that you can also [simulate TLS](https://symfony.com/doc/current/setup/sy
 ---
 
 ## Global features overview
+<div align="center">
+  <!--   <img src="https://github.com/maxence-bonnet/OCR_Bilemo/blob/master/uml/overview.png?raw=true" width="500" alt="bilemo overview"> -->
+</div>
 
+Admin : 
+  - create, read, update, delete Phone
+  - create, read, update, delete Client
+  - create, read, update, delete User
 
+regular User :
+  - Authenticate
+  - read Phone item & collection
+  - read User item & collection related with his own Client
+  - create, delete User related with his own Client
 
 ## Api usage
 
