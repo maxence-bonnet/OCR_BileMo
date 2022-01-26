@@ -188,7 +188,7 @@ You can interact with the API either with [Postman](https://www.postman.com/) or
 To interact properly with the OpenApi documentation, you will need to specify the Token in the permissions (Authorizations) after authenticating yourself:
 `Value: Bearer {JWT Token}`
 
-You can check the demonstration [here]()
+You can check the demonstration [here](https://bilemo.maxence-bonnet.fr/api/docs)
 
 <!-- Also, you can interact with the api from the [react-admin](https://marmelab.com/react-admin/Readme.html) frontend application [here]() -->
 
