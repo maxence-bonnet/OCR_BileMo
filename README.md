@@ -163,16 +163,23 @@ notice that you can also [simulate TLS](https://symfony.com/doc/current/setup/sy
     <img src="https://github.com/maxence-bonnet/OCR_Bilemo/blob/master/uml/overview.png?raw=true" width="500" alt="bilemo overview">
 </div>
 
-Admin : 
+regular User :
+  - authenticate with JSON Web Token
+  - refresh Token
+  - read Phone item & collection, count Phones
+  - read User item & collection related with his own Client
+  - create, delete User related with his own Client
+  - check authenticated User informations
+
+Admin :
+  - everything a user can do
   - create, read, update, delete Phone
   - create, read, update, delete Client
   - create, read, update, delete User
 
-regular User :
-  - Authenticate
-  - read Phone item & collection
-  - read User item & collection related with his own Client
-  - create, delete User related with his own Client
+### More :
+
+As an example of extension, the Brand class, related to phones, has been added and can be browsed by Users.
 
 ## Api usage
 
