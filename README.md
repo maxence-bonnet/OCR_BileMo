@@ -160,7 +160,7 @@ notice that you can also [simulate TLS](https://symfony.com/doc/current/setup/sy
 
 ## Global features overview
 <div align="center">
-  <!--   <img src="https://github.com/maxence-bonnet/OCR_Bilemo/blob/master/uml/overview.png?raw=true" width="500" alt="bilemo overview"> -->
+    <img src="https://github.com/maxence-bonnet/OCR_Bilemo/blob/master/uml/overview.png?raw=true" width="500" alt="bilemo overview">
 </div>
 
 Admin : 
