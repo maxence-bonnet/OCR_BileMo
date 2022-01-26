@@ -178,9 +178,12 @@ regular User :
 
 You can interact with the API either with [Postman](https://www.postman.com/) or directly on the documentation generated with [OpenApi / Swagger UI](https://api-platform.com/docs/core/openapi/)
 
+To interact properly with the OpenApi documentation, you will need to specify the Token in the permissions (Authorizations) after authenticating yourself:
+`Value: Bearer {JWT Token}`
+
 You can check the demonstration [here]()
 
-<!-- Also, you can interact with the api from the [react-admin](https://marmelab.com/react-admin/Readme.html) frontend applicatiion [here]() -->
+<!-- Also, you can interact with the api from the [react-admin](https://marmelab.com/react-admin/Readme.html) frontend application [here]() -->
 
 Feel free to connect (with admin user from data fixtures) and try it, data will be reset 3 times a day.
 
