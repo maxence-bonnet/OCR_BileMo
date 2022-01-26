@@ -26,14 +26,10 @@ class Client
     #[ORM\Column(type: 'datetime_immutable')]
     private $createdAt;
 
-    #[ORM\ManyToMany(targetEntity: Phone::class, inversedBy: 'clients')]
-    private $phonesList;
-
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->users = new ArrayCollection();
-        $this->phonesList = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,30 +94,6 @@ class Client
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Phone[]
-     */
-    public function getPhonesList(): Collection
-    {
-        return $this->phonesList;
-    }
-
-    public function addPhonesList(Phone $phonesList): self
-    {
-        if (!$this->phonesList->contains($phonesList)) {
-            $this->phonesList[] = $phonesList;
-        }
-
-        return $this;
-    }
-
-    public function removePhonesList(Phone $phonesList): self
-    {
-        $this->phonesList->removeElement($phonesList);
 
         return $this;
     }

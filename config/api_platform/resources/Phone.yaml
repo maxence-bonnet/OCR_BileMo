@@ -28,15 +28,6 @@ App\Entity\Phone:
       openapi_context:
         summary: Creates a Phone resource (Admin only).
         description: Creates a Phone resource (Admin only).        
-    getMyList:
-      method: GET
-      path: /phones/get_my_list
-      controller: App\Controller\PhoneController
-      filters: []
-      pagination_enabled: false # Pagination should be handled manually here
-      openapi_context:
-        summary: Retrieves the collection of Phone resources from Client's List.
-        description: Retrieves the collection of Phone resources from Client's List.
     count:
       method: GET
       path: /phones/count
@@ -84,33 +75,3 @@ App\Entity\Phone:
       openapi_context:
         summary: Removes the Phone resource (Admin only).
         description: Removes the Phone resource (Admin only).               
-    addToClientList:
-      method: PATCH
-      path: /phones/{id}/add_to_my_list
-      controller: App\Controller\PhoneController
-      filters: []
-      validation_groups: []
-      denormalization_context:
-        groups: []      
-      pagination_enabled: false
-      openapi_context:
-        summary: Adds the Phone resource to Client's list.
-        description: Adds the Phone resource to Client's list.
-        requestBody:
-            content:
-              application/merge-patch+json:
-                schema:
-                  type: object
-    removeFromClientList:
-      method: PATCH
-      path: /phones/{id}/remove_from_my_list
-      controller: App\Controller\PhoneController
-      filters: []
-      validation_groups: []
-      denormalization_context:
-        groups: []      
-      pagination_enabled: false
-      openapi_context:
-        summary: Removes the Phone resource from Client's list.
-        description: Removes the Phone resource from Client's list.
-      

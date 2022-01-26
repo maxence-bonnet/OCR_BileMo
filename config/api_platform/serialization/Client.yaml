@@ -5,11 +5,8 @@ App\Entity\Client:
     id:
       groups: [read:Client:item, read:User:item]
     name:
-      groups: [read:Client:collection, write:Client, read:User:item, read:User:collection]      
+      groups: [read:Client:item, read:Client:collection, write:Client, read:User:item, read:User:collection]      
     users:
       groups: [read:Client:item]
     createdAt:
       groups: [read:Client:collection, read:User:item]
-    phonesList:
-      groups: [read:Client:item]
-    

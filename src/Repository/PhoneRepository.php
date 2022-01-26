@@ -29,16 +29,4 @@ class PhoneRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-
-    public function findByClient(int $clientId)
-    {
-        return $this->createQueryBuilder('p')
-            ->select('p', 'b')
-            ->join('p.clients', 'c')
-            ->leftJoin('p.brand', 'b')
-            ->where('c.id = :client')
-            ->setParameter('client', $clientId)
-            ->getQuery()
-            ->getResult();
-    }
 }

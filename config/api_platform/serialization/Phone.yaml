@@ -20,5 +20,3 @@ App\Entity\Phone:
         type: App/Entity/Brand
         description: Brand of the Phone
         example: /api/brands/1
-    clients:
-      groups: []

@@ -3,14 +3,11 @@
 namespace App\Entity;
 
 use App\Entity\Brand;
-use ApiPlatform\Core\Action\NotFoundAction;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\PhoneRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\Length;
@@ -83,22 +80,9 @@ class Phone
     ]
     private Brand $brand;
 
-    #[ORM\ManyToMany(targetEntity: Client::class, mappedBy: 'phonesList')]
-    #[
-        ApiProperty(
-            openapiContext: [
-                'type' => Client::class,
-                'description' => 'List of Clients having the phone saved in their list',
-                'example' => ['/api/clients/1']
-            ],
-        )
-    ]
-    private $clients;
-
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->clients = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -174,33 +158,6 @@ class Phone
     public function setBrand(?Brand $brand): self
     {
         $this->brand = $brand;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Client[]
-     */
-    public function getClients(): Collection
-    {
-        return $this->clients;
-    }
-
-    public function addClient(Client $client): self
-    {
-        if (!$this->clients->contains($client)) {
-            $this->clients[] = $client;
-            $client->addPhonesList($this);
-        }
-
-        return $this;
-    }
-
-    public function removeClient(Client $client): self
-    {
-        if ($this->clients->removeElement($client)) {
-            $client->removePhonesList($this);
-        }
 
         return $this;
     }

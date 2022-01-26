@@ -10,6 +10,10 @@ use Symfony\Component\Security\Core\Security;
 use App\Entity\Phone;
 use App\Entity\User;
 
+/**
+ * This extension automatically filters research by current User's Client (hidding other Client's data).
+ * Administrator by-passes this rule since he is not related to a Client.
+ */
 class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     public function __construct(private Security $security)
