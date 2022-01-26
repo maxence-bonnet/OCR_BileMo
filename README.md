@@ -114,7 +114,7 @@ php bin/console doctrine:fixtures:load
 ---
 ### 5. Generate public and private keys for JSON Web Token authentication 
 
-This is related with [Lexik JWT Authentication](#)
+This is related with [Lexik JWT Authentication](#significant-bundles-used)
 
 ```
 php bin/console lexik:jwt:generate-keypair
