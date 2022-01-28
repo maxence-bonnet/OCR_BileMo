@@ -51,7 +51,7 @@
 git clone https://github.com/maxence-bonnet/OCR_BileMo.git
 ```
 
-or [`download .zip`](https://github.com/maxence-bonnet/OCR_BileMo/archive/refs/heads/master.zip) in case you don't use have git installed
+or [`download .zip`](https://github.com/maxence-bonnet/OCR_BileMo/archive/refs/heads/master.zip) in case you don't have git installed
 
 ---
 
@@ -194,7 +194,7 @@ You can check the demonstration [here](https://bilemo.maxence-bonnet.fr/api/docs
 
 <!-- Also, you can interact with the api from the [react-admin](https://marmelab.com/react-admin/Readme.html) frontend application [here]() -->
 
-Feel free to connect (with admin user from data fixtures) and try it, data will be reset 3 times a day.
+Feel free to connect (with admin or regular user from data fixtures) and try it, data will be reset 3 times a day.
 
 ## Code Analysis
 
