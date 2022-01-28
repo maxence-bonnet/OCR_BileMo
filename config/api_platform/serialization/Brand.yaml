@@ -10,4 +10,3 @@ App\Entity\Brand:
       groups: [read:Brand:collection, read:Phone:item]
     phones:
       groups: [read:Brand:item]
-        
